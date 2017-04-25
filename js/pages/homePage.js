@@ -33,7 +33,7 @@ class HomePage extends React.Component {
         }
         let tabMap = {};
         _.forEach(categories, (item) => {
-            tabMap[item.category_name] = {screen: contentListPage}
+            tabMap[item.category_name] = {screen: contentListPage};
         });
         const Tab = TabNavigator(tabMap, {
             tabBarOptions: {
@@ -42,9 +42,13 @@ class HomePage extends React.Component {
                 tabStyle: {
                     width: 100
                 }
-            }
+            },
+            // 开启懒加载
+            lazyLoad: true
         });
-        return <Tab/>;
+        return <Tab
+            screenProps={{categories: categories}}
+        />;
     }
     componentDidMount () {
         this._fetchCategories();

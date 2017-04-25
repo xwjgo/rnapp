@@ -3,10 +3,6 @@ import {AppRegistry, StyleSheet, Text, View, ScrollView, FlatList} from 'react-n
 
 class Header extends React.Component {
     render () {
-        console.log(Text);
-        console.log(View);
-        console.log(FlatList);
-        console.log(ScrollView);
         return (
             <ScrollView>
                 <FlatList

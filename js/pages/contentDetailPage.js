@@ -4,7 +4,7 @@ import {AppRegistry, StyleSheet, View, Text} from 'react-native';
 class ContentDetailPage extends React.Component {
     static navigationOptions ({navigation}) {
         return {
-            title: navigation.state.params.user
+            tabBarLabel: '列表'
         }
     }
 

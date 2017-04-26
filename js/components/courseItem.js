@@ -1,15 +1,25 @@
 import React from 'react';
+import {connect} from 'react-redux';
+import {NavigationActions} from 'react-navigation';
 import {AppRegistry, StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
 import settings from '../settings';
 
 class CourseItem extends React.Component {
+    _goChapterListPage (course) {
+        const navigationAction = NavigationActions.navigate({
+            routeName: 'ChapterList',
+            params: {course}
+        });
+        this.props.dispatch(navigationAction);
+    }
     render () {
+        console.log(this);
         const course = this.props.course;
         const {course_name, teacher, post_time, picture} = course;
         const post_date = new Date(post_time);
         const {host, port} = settings.server;
         return (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => {this._goChapterListPage(course)}}>
                 <View style={styles.container}>
                     <View style={styles.left}>
                         <View>
@@ -58,4 +68,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default CourseItem;
+export default connect()(CourseItem);

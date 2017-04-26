@@ -36,6 +36,7 @@ class ContentListPage extends React.Component {
         this._fetchCourses();
     }
     render () {
+        console.log(this);
         const courses = this.state.courses;
         return (courses &&
             <View>

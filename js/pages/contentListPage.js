@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import {View, Text, FlatList} from 'react-native';
-import Item from '../components/item';
+import CourseItem from '../components/courseItem';
 import Utils from '../utils';
 import settings from '../settings';
 
@@ -41,7 +41,7 @@ class ContentListPage extends React.Component {
             <View>
                 <FlatList
                     data={courses}
-                    renderItem={({item}) => <Item course={item}/>}
+                    renderItem={({item}) => <CourseItem course={item}/>}
                     keyExtractor={item => item._id}
                 />
             </View>

@@ -2,7 +2,7 @@ import React from 'react';
 import {AppRegistry, StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
 import settings from '../settings';
 
-class Item extends React.Component {
+class CourseItem extends React.Component {
     render () {
         const course = this.props.course;
         const {course_name, teacher, post_time, picture} = course;
@@ -58,4 +58,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Item;
+export default CourseItem;

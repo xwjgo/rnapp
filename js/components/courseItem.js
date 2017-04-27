@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {NavigationActions} from 'react-navigation';
-import {AppRegistry, StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
+import {AppRegistry, StyleSheet, View, Text, Image, TouchableNativeFeedback} from 'react-native';
 import settings from '../settings';
 
 class CourseItem extends React.Component {
@@ -13,13 +13,12 @@ class CourseItem extends React.Component {
         this.props.dispatch(navigationAction);
     }
     render () {
-        console.log(this);
         const course = this.props.course;
         const {course_name, teacher, post_time, picture} = course;
         const post_date = new Date(post_time);
         const {host, port} = settings.server;
         return (
-            <TouchableOpacity onPress={() => {this._goChapterListPage(course)}}>
+            <TouchableNativeFeedback onPress={() => {this._goChapterListPage(course)}}>
                 <View style={styles.container}>
                     <View style={styles.left}>
                         <View>
@@ -34,7 +33,7 @@ class CourseItem extends React.Component {
                         <Image source={{uri: `http://${host}:${port}/${picture}`}} style={styles.image}/>
                     </View>
                 </View>
-            </TouchableOpacity>
+            </TouchableNativeFeedback>
         );
     }
 }

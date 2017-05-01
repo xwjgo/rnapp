@@ -9,6 +9,7 @@
   "dependencies": {
     "async": "2.3.0",
     "lodash": "4.17.4",
+    "pug": "2.0.0-beta.12",
     "react": "16.0.0-alpha.6",
     "react-native": "0.43.4",
     "react-native-video": "1.0.0",

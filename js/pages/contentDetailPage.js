@@ -14,7 +14,16 @@ class ContentDetailPage extends React.Component {
         const {video, html} = this.props.navigation.state.params.section;
         const {host, port} = settings.server;
         const videoUrl = `http://${host}:${port}/${video}`;
-        const htmlWithVideo= `
+        const videoHtml = `
+            <video id="my-video" class="video-js vjs-big-play-centered" controls preload="auto" width="${width}" height="264" data-setup="{}">
+            <source src="${videoUrl}" type='video/mp4'>
+                <p class="vjs-no-js">
+                    不支持HTML5视频播放
+                    <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                </p>
+            </video>
+        `;
+        const templateHtml= `
             <head>
                 <link href="http://vjs.zencdn.net/5.19.2/video-js.css" rel="stylesheet">
                 <style>
@@ -32,28 +41,22 @@ class ContentDetailPage extends React.Component {
                 </style>
             </head>
             <body>
-              <video id="my-video" class="video-js vjs-big-play-centered" controls preload="auto" width="${width}" height="264" data-setup="{}">
-                <source src="${videoUrl}" type='video/mp4'>
-                <p class="vjs-no-js">
-                  不支持HTML5视频播放
-                  <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-                </p>
-              </video>
+              <div id="video"></div>
               <div id="main">
                 ${html}
               </div>
               <script src="http://vjs.zencdn.net/5.19.2/video.js"></script>
               <script type="text/javascript">
-                const video = document.querySelector('video');
-                  if (!${video}) {
-                    video.parentNode.removeChild(video);  
-                  }
+                const videoNode = document.querySelector('#video');
+                if('${video}' !== 'undefined') {
+                    videoNode.innerHTML = \`${videoHtml}\`;
+                }
               </script>
             </body>
         `;
         return (
             <WebView
-                source={{html: htmlWithVideo}}
+                source={{html: templateHtml}}
                 style={styles.webView}
             />
         );

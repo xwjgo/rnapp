@@ -11,6 +11,8 @@
     "lodash": "4.17.4",
     "react": "16.0.0-alpha.6",
     "react-native": "0.43.4",
+    "react-native-video": "1.0.0",
+    "react-native-video-controls": "1.2.0",
     "react-navigation": "git+https://github.com/react-community/react-navigation.git#7165efc",
     "react-redux": "5.0.4",
     "redux": "3.6.0"

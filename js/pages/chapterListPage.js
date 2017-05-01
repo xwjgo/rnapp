@@ -21,6 +21,10 @@ class ChapterListPage extends React.Component {
             currentChapterId: section.key
         });
     }
+    _goContentDetailPage (section) {
+        const {navigate} = this.props.navigation;
+        navigate('ContentDetail', {section: section});
+    }
     _genHeader (section) {
         return (
             <TouchableHighlight onPress={() => this._handlePress(section)}>
@@ -32,7 +36,7 @@ class ChapterListPage extends React.Component {
     }
     _genItem (item) {
         return ( item.c_id === this.state.currentChapterId &&
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => {this._goContentDetailPage(item)}}>
                 <View style={styles.commonItem}>
                     <Text>    🍁 {item.title}</Text>
                 </View>

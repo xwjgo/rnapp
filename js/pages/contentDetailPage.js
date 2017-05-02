@@ -25,10 +25,11 @@ class ContentDetailPage extends React.Component {
         `;
         const templateHtml= `
             <head>
-                <link href="http://vjs.zencdn.net/5.19.2/video-js.css" rel="stylesheet">
+                <link href="http://vjs.zencdn.net/6.0.0/video-js.css" rel="stylesheet">
                 <style>
                   * {
                     word-wrap: break-word;
+                    box-sizing: border-box;
                   }
                   body {
                     margin: 0;
@@ -37,6 +38,7 @@ class ContentDetailPage extends React.Component {
                   #main {
                     width: ${width};
                     overflow: hidden;
+                    padding: 0 5px
                   } 
                 </style>
             </head>
@@ -45,7 +47,7 @@ class ContentDetailPage extends React.Component {
               <div id="main">
                 ${html}
               </div>
-              <script src="http://vjs.zencdn.net/5.19.2/video.js"></script>
+              <script src="http://vjs.zencdn.net/6.0.0/video.js"></script>
               <script type="text/javascript">
                 const videoNode = document.querySelector('#video');
                 if('${video}' !== 'undefined') {

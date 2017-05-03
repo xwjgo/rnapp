@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, Text, WebView, ScrollView, ToastAndroid, Dimensions} from 'react-native';
+import Orientation from 'react-native-orientation';
 import settings from '../settings';
 
 class ContentDetailPage extends React.Component {
@@ -15,9 +16,10 @@ class ContentDetailPage extends React.Component {
         }
     }
     handleFsToggle () {
-        this.setState((prevState) => ({
-            isFullScreen: !prevState.isFullScreen
-        }));
+        Orientation.lockToLandscape();
+        // this.setState((prevState) => ({
+        //     isFullScreen: !prevState.isFullScreen
+        // }));
     };
     render () {
         const {width} = Dimensions.get('window');
@@ -66,7 +68,7 @@ class ContentDetailPage extends React.Component {
                     const controlBar = myPlayer.getChild('ControlBar');
                     const fsToggle = controlBar.getChild('FullscreenToggle').contentEl();
                     fsToggle.addEventListener('click', () => {
-                        window.postMessage('enterFullScreen');
+                        window.postMessage('toggleFullScreen');
                     });
                 }
               </script>

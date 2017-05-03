@@ -11,7 +11,7 @@
     "lodash": "4.17.4",
     "react": "16.0.0-alpha.6",
     "react-native": "0.43.4",
-    "react-native-orientation": "1.17.0",
+    "react-native-orientation": "git+https://github.com/yamill/react-native-orientation.git#2782917",
     "react-navigation": "git+https://github.com/react-community/react-navigation.git#7165efc",
     "react-redux": "5.0.4",
     "redux": "3.6.0"

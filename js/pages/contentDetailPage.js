@@ -2,21 +2,31 @@ import React from 'react';
 import {StyleSheet, View, Text, WebView, ScrollView, ToastAndroid, Dimensions} from 'react-native';
 import settings from '../settings';
 
-const {width, height} = Dimensions.get('window');
-
 class ContentDetailPage extends React.Component {
+    constructor (props) {
+        super(props);
+        this.state = {
+            isFullScreen: false
+        };
+    }
     static navigationOptions ({navigation}) {
         return {
             title: navigation.state.params.section.title
         }
     }
+    handleFsToggle () {
+        this.setState((prevState) => ({
+            isFullScreen: !prevState.isFullScreen
+        }));
+    };
     render () {
+        const {width} = Dimensions.get('window');
         const {video, html} = this.props.navigation.state.params.section;
         const {host, port} = settings.server;
         const videoUrl = `http://${host}:${port}/${video}`;
         const videoHtml = `
-            <video id="my-video" class="video-js vjs-big-play-centered" controls preload="auto" width="${width}" height="264" data-setup="{}">
-            <source src="${videoUrl}" type='video/mp4'>
+            <video id="my-video" class="video-js vjs-big-play-centered vjs-tech" width=${width} controls preload="auto">
+                <source src="${videoUrl}" type='video/mp4'>
                 <p class="vjs-no-js">
                     不支持HTML5视频播放
                     <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
@@ -36,7 +46,7 @@ class ContentDetailPage extends React.Component {
                     padding: 0
                   }
                   #main {
-                    width: ${width};
+                    width: 100%;
                     overflow: hidden;
                     padding: 0 5px
                   } 
@@ -52,14 +62,27 @@ class ContentDetailPage extends React.Component {
                 const videoNode = document.querySelector('#video');
                 if('${video}' !== 'undefined') {
                     videoNode.innerHTML = \`${videoHtml}\`;
+                    const myPlayer = videojs('my-video');
+                    const controlBar = myPlayer.getChild('ControlBar');
+                    const fsToggle = controlBar.getChild('FullscreenToggle').contentEl();
+                    fsToggle.addEventListener('click', () => {
+                        window.postMessage('enterFullScreen');
+                    });
                 }
               </script>
             </body>
         `;
-        return (
+        return ( this.state.isFullScreen ?
+            <WebView
+                source={{html: templateHtml}}
+                style={[styles.webView, styles.fullScreen]}
+                onMessage={this.handleFsToggle.bind(this)}
+            />
+            :
             <WebView
                 source={{html: templateHtml}}
                 style={styles.webView}
+                onMessage={this.handleFsToggle.bind(this)}
             />
         );
     }
@@ -70,6 +93,10 @@ const styles = StyleSheet.create({
         flex: 1
     },
     webView: {
+
+    },
+    fullScreen: {
+        transform: [{rotate: '90deg'}],
     }
 });
 

@@ -1,7 +1,6 @@
 import React from 'react';
-import {StyleSheet, View, Text, WebView, ScrollView, ToastAndroid, Dimensions} from 'react-native';
+import {StyleSheet, View, Text, WebView, ScrollView, ToastAndroid, Dimensions, StatusBar} from 'react-native';
 import Orientation from 'react-native-orientation';
-import {NavigationActions} from 'react-navigation';
 import settings from '../settings';
 
 class ContentDetailPage extends React.Component {
@@ -13,7 +12,8 @@ class ContentDetailPage extends React.Component {
     }
     static navigationOptions ({navigation}) {
         return {
-            title: navigation.state.params.section.title
+            title: navigation.state.params.section.title,
+            headerVisible: !navigation.state.params.isFullScreen
         }
     }
     handleFsToggle () {
@@ -23,9 +23,10 @@ class ContentDetailPage extends React.Component {
             // 进入全屏后
             Orientation.lockToLandscape();
             // 隐藏导航
-            // 隐藏statusBar
+            this.props.navigation.setParams({isFullScreen: true});
+            // 禁止WebView滚动
 
-            // 进制webView滚动
+
         }
         this.setState((prevState) => ({
             isFullScreen: !prevState.isFullScreen
@@ -72,6 +73,9 @@ class ContentDetailPage extends React.Component {
                     width: 100%;
                     height: ${width};
                   }
+                  .display-none {
+                    display: none;
+                  }
                 </style>
             </head>
             <body>
@@ -87,15 +91,18 @@ class ContentDetailPage extends React.Component {
                     const myPlayer = videojs('my-video');
                     const fsToggle = myPlayer.getChild('ControlBar').getChild('FullscreenToggle').contentEl();
                     const video = document.querySelector('#my-video');
+                    const main = document.querySelector('#main');
                     video.classList.add('little-video');
                     fsToggle.addEventListener('click', () => {
                         window.postMessage('toggleFullScreen');
                         if (video.classList.contains('big-video')) {
                             video.classList.remove('big-video');
                             video.classList.add('little-video');
+                            main.classList.remove('display-none');
                         } else {
                             video.classList.remove('little-video');
                             video.classList.add('big-video');
+                            main.classList.add('display-none');
                         }
                     });
                 }
@@ -105,10 +112,17 @@ class ContentDetailPage extends React.Component {
     }
     render () {
         const {width, height} = Dimensions.get('window');
-        return <WebView
-            source={{html: this._genTemplate(this._genVideoHtml(), width, height)}}
-            onMessage={this.handleFsToggle.bind(this)}
-        /> ;
+        return (
+            <View style={styles.container}>
+                <StatusBar
+                    hidden={this.state.isFullScreen}
+                />
+                <WebView
+                    source={{html: this._genTemplate(this._genVideoHtml(), width, height)}}
+                    onMessage={this.handleFsToggle.bind(this)}
+                />
+            </View>
+        );
     }
 }
 

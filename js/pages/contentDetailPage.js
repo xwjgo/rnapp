@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text, WebView, ScrollView, ToastAndroid, Dimensions} from 'react-native';
 import Orientation from 'react-native-orientation';
+import {NavigationActions} from 'react-navigation';
 import settings from '../settings';
 
 class ContentDetailPage extends React.Component {
@@ -16,18 +17,26 @@ class ContentDetailPage extends React.Component {
         }
     }
     handleFsToggle () {
-        Orientation.lockToLandscape();
-        // this.setState((prevState) => ({
-        //     isFullScreen: !prevState.isFullScreen
-        // }));
+        if (this.state.isFullScreen) {
+            Orientation.lockToPortrait();
+        } else {
+            // 进入全屏后
+            Orientation.lockToLandscape();
+            // 隐藏导航
+            // 隐藏statusBar
+
+            // 进制webView滚动
+        }
+        this.setState((prevState) => ({
+            isFullScreen: !prevState.isFullScreen
+        }));
     };
-    render () {
-        const {width} = Dimensions.get('window');
-        const {video, html} = this.props.navigation.state.params.section;
+    _genVideoHtml () {
+        const {video} = this.props.navigation.state.params.section;
         const {host, port} = settings.server;
         const videoUrl = `http://${host}:${port}/${video}`;
-        const videoHtml = `
-            <video id="my-video" class="video-js vjs-big-play-centered vjs-tech" width=${width} controls preload="auto">
+        return `
+            <video id="my-video" class="video-js vjs-big-play-centered" controls preload="auto">
                 <source src="${videoUrl}" type='video/mp4'>
                 <p class="vjs-no-js">
                     不支持HTML5视频播放
@@ -35,7 +44,10 @@ class ContentDetailPage extends React.Component {
                 </p>
             </video>
         `;
-        const templateHtml= `
+    }
+    _genTemplate (videoHtml, width, height) {
+        const {html, video} = this.props.navigation.state.params.section;
+        return `
             <head>
                 <link href="http://vjs.zencdn.net/6.0.0/video-js.css" rel="stylesheet">
                 <style>
@@ -52,6 +64,14 @@ class ContentDetailPage extends React.Component {
                     overflow: hidden;
                     padding: 0 5px
                   } 
+                  .little-video{
+                    width: 100%;
+                    height: 250px
+                  }
+                  .big-video {
+                    width: 100%;
+                    height: ${width};
+                  }
                 </style>
             </head>
             <body>
@@ -61,44 +81,40 @@ class ContentDetailPage extends React.Component {
               </div>
               <script src="http://vjs.zencdn.net/6.0.0/video.js"></script>
               <script type="text/javascript">
-                const videoNode = document.querySelector('#video');
+                const videoWrapper = document.querySelector('#video');
                 if('${video}' !== 'undefined') {
-                    videoNode.innerHTML = \`${videoHtml}\`;
+                    videoWrapper.innerHTML = \`${videoHtml}\`;
                     const myPlayer = videojs('my-video');
-                    const controlBar = myPlayer.getChild('ControlBar');
-                    const fsToggle = controlBar.getChild('FullscreenToggle').contentEl();
+                    const fsToggle = myPlayer.getChild('ControlBar').getChild('FullscreenToggle').contentEl();
+                    const video = document.querySelector('#my-video');
+                    video.classList.add('little-video');
                     fsToggle.addEventListener('click', () => {
                         window.postMessage('toggleFullScreen');
+                        if (video.classList.contains('big-video')) {
+                            video.classList.remove('big-video');
+                            video.classList.add('little-video');
+                        } else {
+                            video.classList.remove('little-video');
+                            video.classList.add('big-video');
+                        }
                     });
                 }
               </script>
             </body>
         `;
-        return ( this.state.isFullScreen ?
-            <WebView
-                source={{html: templateHtml}}
-                style={[styles.webView, styles.fullScreen]}
-                onMessage={this.handleFsToggle.bind(this)}
-            />
-            :
-            <WebView
-                source={{html: templateHtml}}
-                style={styles.webView}
-                onMessage={this.handleFsToggle.bind(this)}
-            />
-        );
+    }
+    render () {
+        const {width, height} = Dimensions.get('window');
+        return <WebView
+            source={{html: this._genTemplate(this._genVideoHtml(), width, height)}}
+            onMessage={this.handleFsToggle.bind(this)}
+        /> ;
     }
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1
-    },
-    webView: {
-
-    },
-    fullScreen: {
-        transform: [{rotate: '90deg'}],
     }
 });
 

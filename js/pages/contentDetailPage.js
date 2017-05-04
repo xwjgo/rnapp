@@ -19,14 +19,13 @@ class ContentDetailPage extends React.Component {
     handleFsToggle () {
         if (this.state.isFullScreen) {
             Orientation.lockToPortrait();
+            // 显示导航
+            this.props.navigation.setParams({isFullScreen: false});
         } else {
             // 进入全屏后
             Orientation.lockToLandscape();
             // 隐藏导航
             this.props.navigation.setParams({isFullScreen: true});
-            // 禁止WebView滚动
-
-
         }
         this.setState((prevState) => ({
             isFullScreen: !prevState.isFullScreen

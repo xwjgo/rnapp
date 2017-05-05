@@ -7,6 +7,7 @@ import HomePage from './js/pages/homePage';
 import ContentListPage from './js/pages/contentListPage';
 import ChapterListPage from './js/pages/chapterListPage';
 import ContentDetailPage from './js/pages/contentDetailPage';
+import ChatPage from './js/pages/chatPage';
 import LoginPage from './js/pages/loginPage';
 
 const AppNavigator = StackNavigator({
@@ -14,6 +15,7 @@ const AppNavigator = StackNavigator({
     ContentList: {screen: ContentListPage},
     ChapterList: {screen: ChapterListPage},
     ContentDetail: {screen: ContentDetailPage},
+    Chat: {screen: ChatPage},
     Login: {screen: LoginPage},
 }, {
     initialRouteName: 'Login'

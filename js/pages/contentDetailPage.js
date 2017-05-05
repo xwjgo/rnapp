@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, WebView, ScrollView, ToastAndroid, Dimensions, StatusBar} from 'react-native';
+import {StyleSheet, View, Text, WebView, ScrollView, ToastAndroid, Dimensions, StatusBar, Button} from 'react-native';
 import Orientation from 'react-native-orientation';
 import settings from '../settings';
 
@@ -11,9 +11,17 @@ class ContentDetailPage extends React.Component {
         };
     }
     static navigationOptions ({navigation}) {
+        const {section, isFullScreen} = navigation.state.params;
         return {
-            title: navigation.state.params.section.title,
-            headerVisible: !navigation.state.params.isFullScreen
+            title: section.title,
+            headerVisible: !isFullScreen,
+            headerRight: (<Button
+                title="聊天室"
+                onPress={() => {
+                    navigation.navigate('Chat', {section: section});
+                }}
+            />),
+            headerStyle: {paddingRight: 10}
         }
     }
     handleFsToggle () {

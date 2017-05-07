@@ -1,7 +1,9 @@
+import _ from 'lodash';
 import React from 'react';
-import {View, Text, TextInput, Button, AsyncStorage, StyleSheet} from 'react-native';
-import settings from '../settings';
+import {View, Text, TextInput, Button, AsyncStorage, StyleSheet, FlatList} from 'react-native';
+import MessageItem from '../components/messageItem';
 import Utils from '../utils';
+import settings from '../settings';
 
 class ChatPage extends React.Component {
     static navigationOptions ({navigation}) {
@@ -13,34 +15,53 @@ class ChatPage extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            message: null
+            message: null,
+            socketData: []
         };
         // const {host, port} = settings.server;
         // const chatServer = `http://${host}:${port}`;
-        // AsyncStorage.getItem('user', (error, result) => {
-        //     if (error) {
-        //         return alert('没有user数据');
-        //     }
-        //     const user = JSON.parse(result);
-        //     const {section} = props.navigation.state.params;
-        //     const chatServer = `http://121.249.216.192:3000?room_id=${section._id}&user_id=${user._id}`;
-        //     this.socket = Utils.getSocket(chatServer);
-        //     this.socket.on('connect', () => {
-        //         this.socket.on('chat-message', (msg) => this._handleReceive(msg));
-        //     });
-        // });
+        AsyncStorage.getItem('user', (error, result) => {
+            if (error) {
+                return alert('没有user数据');
+            }
+            const user = JSON.parse(result);
+            const {section} = props.navigation.state.params;
+            const chatServer = `http://121.249.216.192:3000?room_id=${section._id}&username=${user.username}`;
+            this.socket = Utils.getSocket(chatServer);
+            this.socket.on('connect', () => {
+                // 监听join
+                this.socket.on('join', (data) => this._handleReceive(data));
+                // 监听chat-message
+                this.socket.on('chat-message', (data) => this._handleReceive(data));
+                // 监听leave
+                this.socket.on('leave', (data) => this._handleReceive(data));
+            });
+        });
     }
-    _handleReceive (msg) {
-        alert(msg);
+    _handleReceive (data) {
+        const newData = _.cloneDeep(this.state.socketData);
+        newData.push(data);
+        this.setState({
+            socketData: newData
+        });
     }
     _handleSend (message) {
        this.socket.emit('chat-message', message);
     }
     render () {
+        const socketData = this.state.socketData;
+        _.forEach(socketData, (item) => {
+            item.key = _.uniqueId();
+        });
         return (
             <View style={styles.container}>
+                <Text>chatBox</Text>
                 <View>
-                    <Text>chatBox</Text>
+                    <FlatList
+                        data={socketData}
+                        renderItem={({item}) => <MessageItem data={item}/>}
+                        keyExtractor={item => _.uniqueId()}
+                    />
                 </View>
                 <View style={styles.bottom}>
                     <TextInput
@@ -78,7 +99,9 @@ const styles = StyleSheet.create({
         flex: 1
     },
     send: {
-        width: 70
+        width: 70,
+        justifyContent: 'center',
+        marginLeft: 5
     }
 });
 

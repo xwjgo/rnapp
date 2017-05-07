@@ -1,3 +1,5 @@
+import io from 'socket.io-client';
+
 export default class Utils {
     /**
      * 对fetch中post请求的封装
@@ -40,5 +42,18 @@ export default class Utils {
        }).catch(err => {
            alert('请求失败');
        });
+    }
+
+    /**
+     * 获取socket单例
+     * @param server
+     * @returns {*}
+     */
+    static getSocket (server) {
+        this.sockets || (this.sockets = {});
+        if (!this.sockets[server]) {
+            return this.sockets[server] = io(server, {jsonp: false});
+        }
+        return this.sockets[server];
     }
 }

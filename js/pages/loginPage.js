@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput, View, Button} from 'react-native';
+import {TextInput, View, Button, AsyncStorage} from 'react-native';
 import settings from '../settings';
 import Utils from '../utils';
 
@@ -18,6 +18,8 @@ class LoginPage extends React.Component {
         const loginApi = `http://${host}:${port}/api/sessions`;
         Utils.post(loginApi, {username, password}, (res) => {
             navigate('Home', {user: res});
+            // asyncStorage
+            AsyncStorage.setItem('user', JSON.stringify(res));
         }, (err) => {
             alert(err.message);
         });

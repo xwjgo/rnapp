@@ -4,14 +4,28 @@ import {StyleSheet, View, Text} from 'react-native';
 class MessageItem extends React.Component {
     render () {
         const data = this.props.data;
-        return (data.message ?
-            <View>
-                <Text>{data.username}: {data.message}</Text>
-            </View> :
-            <View>
-                <Text>{data.username} connect</Text>
-            </View>
-        );
+        switch (data.type) {
+            case 'join':
+                return (
+                    <View>
+                        <Text>{data.username} 进入聊天室</Text>
+                    </View>
+                );
+            case 'leave':
+                return (
+                    <View>
+                        <Text>{data.username} 离开聊天室</Text>
+                    </View>
+                );
+            case 'chat-message':
+                return (
+                    <View>
+                        <Text>{data.username}: {data.message}</Text>
+                    </View>
+                );
+            default:
+                return null;
+        }
     }
 }
 

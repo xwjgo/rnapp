@@ -3,6 +3,7 @@ import {createStore, combineReducers} from 'redux';
 import {Provider, connect} from 'react-redux';
 import {AppRegistry} from 'react-native';
 import {StackNavigator, addNavigationHelpers} from 'react-navigation';
+import {socketData, number} from './js/state/reducers';
 import HomePage from './js/pages/homePage';
 import ContentListPage from './js/pages/contentListPage';
 import ChapterListPage from './js/pages/chapterListPage';
@@ -27,7 +28,9 @@ const navReducer = (state = initialState, action) => {
     return nextState || state;
 };
 const appReducer = combineReducers({
-    nav: navReducer
+    nav: navReducer,
+    socketData,
+    number
 });
 
 class App extends React.Component {

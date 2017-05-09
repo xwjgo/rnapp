@@ -1,9 +1,11 @@
 import _ from 'lodash';
 import React from 'react';
+import {connect} from 'react-redux';
+import * as actionCreators from '../state/actions';
+import {bindActionCreators} from 'redux';
 import {View, Text, TextInput, Button, AsyncStorage, StyleSheet, FlatList} from 'react-native';
 import MessageItem from '../components/messageItem';
 import Utils from '../utils';
-import settings from '../settings';
 
 class ChatPage extends React.Component {
     static navigationOptions ({navigation}) {
@@ -16,8 +18,8 @@ class ChatPage extends React.Component {
         super(props);
         this.state = {
             message: '',
-            socketData: []
         };
+        this.sectionId = props.navigation.state.params.section._id;
     }
     componentDidMount () {
         AsyncStorage.getItem('user', (error, result) => {
@@ -25,13 +27,14 @@ class ChatPage extends React.Component {
                 return alert('没有user数据');
             }
             const user = JSON.parse(result);
-            const {section} = this.props.navigation.state.params;
-            const chatServer = `http://121.249.216.192:3000?room_id=${section._id}&username=${user.username}`;
+            const chatServer = `http://121.249.216.192:3000?room_id=${this.sectionId}&username=${user.username}`;
             this.socket = Utils.getSocket(chatServer);
             // 监听join
             this.socket.on('join', (data) => this._handleReceive(data));
             // 监听chat-message
             this.socket.on('chat-message', (data) => this._handleReceive(data));
+            // 监听 new-number
+            this.socket.on('new-number', (number) => this.props.actions.updateNumber(this.sectionId, number));
             // 监听leave
             this.socket.on('leave', (data) => this._handleReceive(data));
         });
@@ -40,11 +43,7 @@ class ChatPage extends React.Component {
         this.socket.off();
     }
     _handleReceive (data) {
-        const newData = _.cloneDeep(this.state.socketData);
-        newData.push(data);
-        this.setState({
-            socketData: newData
-        });
+        this.props.actions.addSocketData(this.sectionId, data);
     }
     _handleSend (message) {
         if (!message.trim()) {
@@ -56,13 +55,13 @@ class ChatPage extends React.Component {
         });
     }
     render () {
-        const socketData = this.state.socketData;
+        const socketData = this.props.socketData[this.sectionId];
         _.forEach(socketData, (item) => {
             item.key = _.uniqueId();
         });
         return (
             <View style={styles.container}>
-                <Text>chatBox</Text>
+                <Text>共{this.props.number[this.sectionId]}人在线</Text>
                 <View>
                     <FlatList
                         data={socketData}
@@ -92,7 +91,8 @@ class ChatPage extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end',
+        marginTop: 80
     },
     bottom: {
         flexDirection: 'row',
@@ -113,4 +113,13 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ChatPage;
+const mapStateToProps = (state) => ({
+    socketData: state.socketData,
+    number: state.number
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    actions: bindActionCreators(actionCreators, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChatPage);

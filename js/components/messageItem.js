@@ -7,20 +7,21 @@ class MessageItem extends React.Component {
         switch (data.type) {
             case 'join':
                 return (
-                    <View>
-                        <Text>{data.username} 进入聊天室</Text>
+                    <View style={styles.hintBox}>
+                        <Text style={styles.hint}>{data.username} 进入聊天室</Text>
                     </View>
                 );
             case 'leave':
                 return (
-                    <View>
-                        <Text>{data.username} 离开聊天室</Text>
+                    <View style={styles.hintBox}>
+                        <Text style={styles.hint}>{data.username} 离开聊天室</Text>
                     </View>
                 );
             case 'chat-message':
                 return (
-                    <View>
-                        <Text>{data.username}: {data.message}</Text>
+                    <View style={styles.messageBox}>
+                        <Text>{data.username}:</Text>
+                        <Text style={styles.message}>{data.message}</Text>
                     </View>
                 );
             default:
@@ -28,5 +29,33 @@ class MessageItem extends React.Component {
         }
     }
 }
+
+const styles = StyleSheet.create({
+    messageBox: {
+        flex: 1,
+        flexDirection: 'row',
+        margin: 5,
+        alignItems: 'center'
+    },
+    message: {
+        color: '#343434',
+        fontSize: 16,
+        borderRadius: 5,
+        backgroundColor: '#9FE658',
+        padding: 10,
+        marginHorizontal: 10,
+        maxWidth: 250
+    },
+    hintBox: {
+        alignSelf: 'center'
+    },
+    hint: {
+        color: '#FFF',
+        backgroundColor: '#D4D4D4',
+        margin: 5,
+        borderRadius: 5,
+        padding: 5
+    }
+});
 
 export default MessageItem;

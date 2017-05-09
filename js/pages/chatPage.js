@@ -36,6 +36,9 @@ class ChatPage extends React.Component {
             this.socket.on('leave', (data) => this._handleReceive(data));
         });
     }
+    componentWillUnmount () {
+        this.socket.off();
+    }
     _handleReceive (data) {
         const newData = _.cloneDeep(this.state.socketData);
         newData.push(data);

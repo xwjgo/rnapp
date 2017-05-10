@@ -52,8 +52,14 @@ export default class Utils {
     static getSocket (server) {
         this.sockets || (this.sockets = {});
         if (!this.sockets[server]) {
-            return this.sockets[server] = io(server, {jsonp: false});
+            return {
+                socket: this.sockets[server] = io(server, {jsonp: false}),
+                isNewSocket: true
+            };
         }
-        return this.sockets[server];
+        return {
+            socket: this.sockets[server],
+            isNewSocket: false
+        };
     }
 }

@@ -28,7 +28,11 @@ class ChatPage extends React.Component {
             }
             const user = JSON.parse(result);
             const chatServer = `http://121.249.216.192:3000?room_id=${this.sectionId}&username=${user.username}`;
-            this.socket = Utils.getSocket(chatServer);
+            const {socket, isNewSocket} = Utils.getSocket(chatServer);
+            this.socket = socket;
+            if (!isNewSocket) {
+                return;
+            }
             // 监听join
             this.socket.on('join', (data) => this._handleReceive(data));
             // 监听chat-message
@@ -39,10 +43,8 @@ class ChatPage extends React.Component {
             this.socket.on('leave', (data) => this._handleReceive(data));
         });
     }
-    componentWillUnmount () {
-        this.socket.off();
-    }
     _handleReceive (data) {
+        console.log(this.props.socketData[this.sectionId]);
         this.props.actions.addSocketData(this.sectionId, data);
     }
     _handleSend (message) {
@@ -61,7 +63,11 @@ class ChatPage extends React.Component {
         });
         return (
             <View style={styles.container}>
-                <Text>共{this.props.number[this.sectionId]}人在线</Text>
+                <Text style={styles.numberBox}>
+                    共
+                    <Text style={styles.number}>{this.props.number[this.sectionId]}</Text>
+                    人在线
+                </Text>
                 <View>
                     <FlatList
                         data={socketData}
@@ -92,7 +98,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'flex-end',
-        marginTop: 80
+        marginTop: 80,
+        padding: 5
     },
     bottom: {
         flexDirection: 'row',
@@ -110,6 +117,12 @@ const styles = StyleSheet.create({
         width: 70,
         justifyContent: 'center',
         marginLeft: 5
+    },
+    numberBox: {
+       alignSelf: 'center'
+    },
+    number: {
+        color: 'red'
     }
 });
 

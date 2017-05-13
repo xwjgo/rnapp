@@ -41,10 +41,14 @@ class ChatPage extends React.Component {
             this.socket.on('new-number', (number) => this.props.actions.updateNumber(this.sectionId, number));
             // 监听leave
             this.socket.on('leave', (data) => this._handleReceive(data));
+            // 自己断开连接
+            this.socket.on('disconnect', () => this._handleReceive({
+                type: 'leave',
+                username: user.username
+            }));
         });
     }
     _handleReceive (data) {
-        console.log(this.props.socketData[this.sectionId]);
         this.props.actions.addSocketData(this.sectionId, data);
     }
     _handleSend (message) {
@@ -70,6 +74,7 @@ class ChatPage extends React.Component {
                 </Text>
                 <View>
                     <FlatList
+                        ref={(ref) => {this._flatList = ref}}
                         data={socketData}
                         renderItem={({item}) => <MessageItem data={item}/>}
                         keyExtractor={item => _.uniqueId()}

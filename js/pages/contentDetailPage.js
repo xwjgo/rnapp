@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text, WebView, ScrollView, ToastAndroid, Dimensions, StatusBar, Button} from 'react-native';
 import Orientation from 'react-native-orientation';
+import Bottom from '../components/bottom';
 import settings from '../settings';
 
 class ContentDetailPage extends React.Component {
@@ -24,7 +25,7 @@ class ContentDetailPage extends React.Component {
             headerStyle: {paddingRight: 10}
         }
     }
-    handleFsToggle () {
+    _handleFsToggle () {
         if (this.state.isFullScreen) {
             Orientation.lockToPortrait();
             // 显示导航
@@ -119,6 +120,7 @@ class ContentDetailPage extends React.Component {
     }
     render () {
         const {width, height} = Dimensions.get('window');
+        const {section} = this.props.navigation.state.params;
         return (
             <View style={styles.container}>
                 <StatusBar
@@ -126,8 +128,9 @@ class ContentDetailPage extends React.Component {
                 />
                 <WebView
                     source={{html: this._genTemplate(this._genVideoHtml(), width, height)}}
-                    onMessage={this.handleFsToggle.bind(this)}
+                    onMessage={this._handleFsToggle.bind(this)}
                 />
+                <Bottom section={section}/>
             </View>
         );
     }

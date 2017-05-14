@@ -27,6 +27,31 @@ export default class Utils {
     };
 
     /**
+     * 对fetch的delete请求封装
+     * @param url
+     * @param data
+     * @param successCallback
+     * @param errorCallback
+     */
+    static delete (url, data, successCallback, errorCallback) {
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(res => res.json()).then(res => {
+            if (!res.code) {
+                successCallback(res);
+            } else {
+                errorCallback(res);
+            }
+        }).catch(err => {
+            alert('请求失败');
+        });
+    }
+
+    /**
      * 对fetch中get请求的封装
      * @param url
      * @param successCallback

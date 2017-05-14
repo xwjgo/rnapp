@@ -130,7 +130,7 @@ class ContentDetailPage extends React.Component {
                     source={{html: this._genTemplate(this._genVideoHtml(), width, height)}}
                     onMessage={this._handleFsToggle.bind(this)}
                 />
-                <Bottom section={section}/>
+                {this.state.isFullScreen ? null : <Bottom section={section}/>}
             </View>
         );
     }

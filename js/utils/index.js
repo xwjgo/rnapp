@@ -51,6 +51,24 @@ export default class Utils {
         });
     }
 
+    static put (url, data, successCallback, errorCallback) {
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(res => res.json()).then(res => {
+            if (!res.code) {
+                successCallback(res);
+            } else {
+                errorCallback(res);
+            }
+        }).catch(err => {
+            alert('请求失败');
+        });
+    }
+
     /**
      * 对fetch中get请求的封装
      * @param url

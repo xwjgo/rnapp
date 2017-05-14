@@ -6,6 +6,7 @@ import {bindActionCreators} from 'redux';
 import {View, Text, TextInput, Button, AsyncStorage, StyleSheet, FlatList} from 'react-native';
 import MessageItem from '../components/messageItem';
 import Utils from '../utils';
+import settings from '../settings';
 
 class ChatPage extends React.Component {
     static navigationOptions ({navigation}) {
@@ -27,7 +28,8 @@ class ChatPage extends React.Component {
                 return alert('没有user数据');
             }
             const user = JSON.parse(result);
-            const chatServer = `http://121.249.216.192:3000?room_id=${this.sectionId}&username=${user.username}`;
+            const {host, port} = settings.server;
+            const chatServer = `http://${host}:${port}?room_id=${this.sectionId}&username=${user.username}`;
             const {socket, isNewSocket} = Utils.getSocket(chatServer);
             this.socket = socket;
             if (!isNewSocket) {

@@ -65,7 +65,7 @@ class CommentPage extends React.Component {
                         {this._genLikeIcon()}
                         <Text>  赞</Text>
                     </Text>
-                    <Text onPress={this._handleReply.bind(this)}>回复</Text>
+                    <Text onPress={this._handleReply.bind(this, item)}>回复</Text>
                 </View>
             </View>
         );
@@ -92,18 +92,32 @@ class CommentPage extends React.Component {
             }));
             // 设置header中的commentNumber
             this.props.navigation.setParams({commentNumber: ++ this.commentNumber});
+            this._textInput.blur();
+            this._flatList.scrollToOffset(0);
         }, (error) => {
             alert(error.message);
+            this._textInput.blur();
         });
     }
     // 点击回复
-    _handleReply () {
-        alert('hhh');
+    _handleReply (item) {
+        this._textInput.focus();
+        this.setState({
+            commentContent: '',
+            parentUsername: item.username
+        });
+    }
+    // TextInput的blur
+    _handleBlur () {
+        this.setState({
+            parentUsername: null
+        });
     }
     render () {
         return (
             <View style={styles.container}>
                 <FlatList
+                    ref={ref => this._flatList = ref}
                     data={this.state.comments}
                     renderItem={({item}) => this._genCommentItem(item)}
                     keyExtractor={item => item._id}
@@ -111,11 +125,13 @@ class CommentPage extends React.Component {
                 />
                 <View style={styles.sendBox}>
                     <TextInput
+                        ref={ref => this._textInput = ref}
                         style={styles.input}
                         onChangeText={(commentContent) => this.setState({commentContent})}
                         value={this.state.commentContent}
                         underlineColorAndroid={'transparent'}
                         placeholder={this.state.parentUsername ? `回复${this.state.parentUsername}:` : `评论`}
+                        onBlur={this._handleBlur.bind(this)}
                     />
                     <View style={styles.send}>
                         <Button

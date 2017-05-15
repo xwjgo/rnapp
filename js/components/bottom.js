@@ -27,7 +27,7 @@ class Bottom extends React.Component {
     }
     // 评论按钮
     _genCommentButton () {
-        return <Icon style={[styles.icon, styles.comment]} name="comment-o" size={25} color="#2196F3"/>;
+        return <Icon style={[styles.icon, styles.comment]} name="commenting-o" size={25} color="#2196F3"/>;
     }
     // 评分按钮
     _genScoreButton () {

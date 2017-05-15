@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
+import {connect} from 'react-redux';
+import {NavigationActions} from 'react-navigation';
 import {StyleSheet, Text, View, AsyncStorage, ToastAndroid, FlatList, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Utils from '../utils';
@@ -25,7 +27,7 @@ class Bottom extends React.Component {
     }
     // 评论按钮
     _genCommentButton () {
-        return <Icon style={[styles.icon, styles.comment]} name="comment-o" size={25} color="#2196F3"/>
+        return <Icon style={[styles.icon, styles.comment]} name="comment-o" size={25} color="#2196F3"/>;
     }
     // 评分按钮
     _genScoreButton () {
@@ -98,6 +100,18 @@ class Bottom extends React.Component {
             }, this._changeScoreSuccess.bind(this, score), this._changeScoreError);
         }
     }
+    // 点击评论
+    _handleComment () {
+        const navigationAction = NavigationActions.navigate({
+            routeName: 'Comment',
+            params: {
+                section: this.section,
+                user: this.user,
+                commentNumber: 0
+            }
+        });
+        this.props.dispatch(navigationAction);
+    }
     _changeScoreSuccess (score) {
         ToastAndroid.show('分数提交成功!', ToastAndroid.SHORT);
         this.setState((prevState) => ({
@@ -169,7 +183,7 @@ class Bottom extends React.Component {
                     <TouchableOpacity onPress={this._handleLike.bind(this)}>
                         {this._genLikeButton()}
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={this._handleComment.bind(this)}>
                         {this._genCommentButton()}
                     </TouchableOpacity>
                 </View>
@@ -219,4 +233,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Bottom;
+export default connect()(Bottom);

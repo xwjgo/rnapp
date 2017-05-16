@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import {StyleSheet, View, Text, Button, FlatList, TextInput} from 'react-native';
+import {StyleSheet, View, Text, Button, FlatList, TextInput, ToastAndroid} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Utils from '../utils';
 import settings from '../settings';
@@ -8,7 +8,7 @@ import settings from '../settings';
 class CommentPage extends React.Component {
     static navigationOptions ({navigation}) {
         return {
-            title: `${navigation.state.params.commentNumber}条评论`
+            title: `${navigation.state.params.commentsNumber}条评论`
         };
     };
     constructor (props) {
@@ -19,20 +19,29 @@ class CommentPage extends React.Component {
         this.state = {
             comments: [],
             commentContent: '',
-            parentUsername: null
+            parentUsername: null,
+            hasLiked: []
         };
     }
     componentDidMount () {
         const {host, port} = settings.server;
         const commentApi = `http://${host}:${port}/api/comments?section_id=${this.section._id}`;
         Utils.get(commentApi, (res) => {
-            this.setState({
-                comments: _.reverse(res)
+            // 设置header中的commentsNumber
+            this.props.navigation.setParams({commentsNumber: res.length});
+            // 保存commentsNumber到this对象
+            this.commentsNumber = res.length;
+            // 收集已经点过赞的评论
+            let hasLiked = [];
+            _.forEach(res, (item) => {
+               if (item.be_liked.indexOf(this.user._id) !== -1) {
+                    hasLiked.push(item._id);
+               }
             });
-            // 设置header中的commentNumber
-            this.props.navigation.setParams({commentNumber: res.length});
-            // 保存commentNumber到this对象
-            this.commentNumber = res.length;
+            this.setState({
+                comments: _.reverse(res),
+                hasLiked
+            });
         }, (err) => {
             alert(err.message);
         });
@@ -43,6 +52,7 @@ class CommentPage extends React.Component {
     _genCommentItem (item) {
         const d = new Date(item.post_time);
         const postTimeString = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+        const likesNumber = item.be_liked.length;
         return (
             <View style={styles.commentItem}>
                 <View style={styles.top}>
@@ -61,9 +71,12 @@ class CommentPage extends React.Component {
                     <Text style={styles.content}>{item.content}</Text>
                 </View>
                 <View style={styles.bottom}>
-                    <Text style={styles.like}>
+                    <Text style={[styles.like, this.state.hasLiked.indexOf(item._id) === -1 ? null : styles.hasLiked]} onPress={this._handleLike.bind(this, item)}>
                         {this._genLikeIcon()}
-                        <Text>  赞</Text>
+                        {likesNumber > 0 ?
+                            <Text>  {likesNumber + ''}</Text> :
+                            <Text>  赞</Text>
+                        }
                     </Text>
                     <Text onPress={this._handleReply.bind(this, item)}>回复</Text>
                 </View>
@@ -90,13 +103,15 @@ class CommentPage extends React.Component {
                 comments: newComments,
                 commentContent: ''
             }));
-            // 设置header中的commentNumber
-            this.props.navigation.setParams({commentNumber: ++ this.commentNumber});
+            // 设置header中的commentsNumber
+            this.props.navigation.setParams({commentsNumber: ++ this.commentsNumber});
             this._textInput.blur();
             this._flatList.scrollToOffset(0);
+            ToastAndroid.show('评论成功!', ToastAndroid.SHORT);
         }, (error) => {
             alert(error.message);
             this._textInput.blur();
+            ToastAndroid.show('评论失败!', ToastAndroid.SHORT);
         });
     }
     // 点击回复
@@ -112,6 +127,50 @@ class CommentPage extends React.Component {
         this.setState({
             parentUsername: null
         });
+    }
+    // 点击赞
+    _handleLike (item) {
+        const {host, port} = settings.server;
+        const commentLikeApi = `http://${host}:${port}/api/comments/${item._id}/likes`;
+        if (item.be_liked.indexOf(this.user._id) === -1) {
+            Utils.post(commentLikeApi, {
+                user_id: this.user._id
+            }, (res) => {
+                const newComments = _.cloneDeep(this.state.comments);
+                _.forEach(newComments, (c) => {
+                    if (c._id === res._id) {
+                        c.be_liked.push(this.user._id);
+                        return false;
+                    }
+                });
+                const newHasLiked = _.cloneDeep(this.state.hasLiked);
+                newHasLiked.push(item._id);
+                this.setState({
+                    comments: newComments,
+                    hasLiked: newHasLiked
+                });
+            }, (err) => {
+                alert(err.message);
+            });
+        } else {
+            Utils.delete(commentLikeApi, {
+                user_id: this.user._id
+            }, (res) => {
+                const newComments = _.cloneDeep(this.state.comments);
+                _.forEach(newComments, (c) => {
+                    if (c._id === res._id) {
+                        _.pull(c.be_liked, this.user._id)
+                        return false;
+                    }
+                });
+                const newHasLiked = _.cloneDeep(this.state.hasLiked);
+                _.pull(newHasLiked, item._id);
+                this.setState({
+                    comments: newComments,
+                    hasLiked: newHasLiked
+                });
+            });
+        }
     }
     render () {
         return (
@@ -197,5 +256,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginLeft: 5
     },
+    hasLiked: {
+        color: 'green'
+    }
 });
 export default CommentPage;

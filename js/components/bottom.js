@@ -107,7 +107,7 @@ class Bottom extends React.Component {
             params: {
                 section: this.section,
                 user: this.user,
-                commentNumber: 0
+                commentsNumber: 0
             }
         });
         this.props.dispatch(navigationAction);

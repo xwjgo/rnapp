@@ -12,6 +12,7 @@ import ChatPage from './js/pages/chatPage';
 import LoginPage from './js/pages/loginPage';
 import CommentPage from './js/pages/commentPage';
 import RegisterPage from './js/pages/registerPage';
+import RootPage from './js/pages/rootPage';
 
 const AppNavigator = StackNavigator({
     Home: {screen: HomePage},
@@ -21,12 +22,13 @@ const AppNavigator = StackNavigator({
     Chat: {screen: ChatPage},
     Login: {screen: LoginPage},
     Comment: {screen: CommentPage},
-    Register: {screen: RegisterPage}
+    Register: {screen: RegisterPage},
+    Root: {screen: RootPage}
 }, {
-    initialRouteName: 'Login'
+    initialRouteName: 'Root'
 });
 
-const initialState = AppNavigator.router.getStateForAction(AppNavigator.router.getActionForPathAndParams('Login'));
+const initialState = AppNavigator.router.getStateForAction(AppNavigator.router.getActionForPathAndParams('Root'));
 const navReducer = (state = initialState, action) => {
     const nextState = AppNavigator.router.getStateForAction(action, state);
     return nextState || state;

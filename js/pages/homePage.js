@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
+import {Text} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {TabNavigator} from 'react-navigation';
 import contentListPage from './contentListPage';
 import settings from '../settings';
@@ -7,7 +9,10 @@ import Utils from '../utils';
 
 class HomePage extends React.Component {
     static navigationOptions = {
-        headerVisible: false
+        headerVisible: false,
+        tabBarLabel: (o) => (
+            <Icon name="home" size={25} color={o.focused ? '#398DEE' : '#666'}/>
+        )
     };
     constructor (props) {
         super(props);

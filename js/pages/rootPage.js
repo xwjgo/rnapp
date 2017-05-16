@@ -16,7 +16,6 @@ class RootPage extends React.Component {
         }, {
             tabBarPosition: 'bottom',
             swipeEnable: false,
-            lazy: true,
             initialRouteName: 'Home',
             tabBarOptions: {
                 indicatorStyle: {

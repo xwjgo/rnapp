@@ -25,6 +25,9 @@ class LikePage extends React.Component {
             if (error) {
                 return;
             }
+            if (!result) {
+                return;
+            }
             this.user = JSON.parse(result);
             let likes = [];
             // 请求小节内容
@@ -80,10 +83,11 @@ class LikePage extends React.Component {
         );
     }
     render () {
-        return (
+        const likesLength = this.state.likes.length;
+        return (likesLength > 0 &&
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <Text style={styles.title}>共有 {this.state.likes.length} 篇收藏</Text>
+                    <Text style={styles.title}>共有 {likesLength} 篇收藏</Text>
                 </View>
                 <View>
                     <FlatList

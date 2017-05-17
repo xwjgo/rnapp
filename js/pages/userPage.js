@@ -23,6 +23,9 @@ class UserPage extends React.Component {
             if (error) {
                 return;
             }
+            if (!result) {
+                return;
+            }
             const user = JSON.parse(result);
             this.setState({
                 user

@@ -103,14 +103,14 @@ const styles = StyleSheet.create({
         flex: 1
     },
     header: {
-        backgroundColor: '#fff',
+        backgroundColor: '#2196F3',
         paddingVertical: 15,
         marginBottom: 10
     },
     title: {
-        color: '#333',
         fontSize: 18,
-        paddingLeft: 10
+        paddingLeft: 10,
+        color: '#fff'
     },
     sectionBox: {
         padding: 10,

@@ -33,7 +33,7 @@ class LoginPage extends React.Component {
         const {host, port} = settings.server;
         const loginApi = `http://${host}:${port}/api/sessions`;
         Utils.post(loginApi, {username, password}, (res) => {
-            navigate('Home', {user: res});
+            navigate('Root', {user: res});
             // asyncStorage
             AsyncStorage.setItem('user', JSON.stringify(res));
         }, (err) => {

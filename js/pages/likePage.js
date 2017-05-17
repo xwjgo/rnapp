@@ -11,7 +11,7 @@ import settings from '../settings';
 class LikePage extends React.Component {
     static navigationOptions = {
         tabBarLabel: (o) => (
-            <Icon name="heart" size={25} color={o.focused ? '#398DEE' : '#666'}/>
+            <Icon name="heart" size={25}/>
         )
     };
     constructor (props) {

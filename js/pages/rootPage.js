@@ -3,11 +3,31 @@ import {TabNavigator} from 'react-navigation';
 import HomePage from './homePage';
 import LikePage from './likePage';
 import UserPage from './userPage';
+import Utils from '../utils';
+import settings from '../settings';
 
 class RootPage extends React.Component {
     static navigationOptions = {
         headerVisible: false
     };
+    constructor (props) {
+        super(props);
+        this.state = {
+            hasLogin: false
+        }
+    }
+    componentDidMount () {
+        const {host, port} = settings.server;
+        const testApi = `http://${host}:${port}/api/categories`;
+        Utils.get(testApi, (res) => {
+            this.setState({
+                hasLogin: true
+            });
+        }, (error) => {
+            const {navigate} = this.props.navigation;
+            navigate('Login');
+        });
+    }
     _genBottomTab () {
         const BottomTab = TabNavigator({
             Home: {screen: HomePage},
@@ -32,7 +52,7 @@ class RootPage extends React.Component {
         return <BottomTab/>
     }
     render () {
-       return (this._genBottomTab());
+       return (this.state.hasLogin && this._genBottomTab());
     }
 }
 

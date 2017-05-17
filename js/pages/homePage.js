@@ -11,7 +11,7 @@ class HomePage extends React.Component {
     static navigationOptions = {
         headerVisible: false,
         tabBarLabel: (o) => (
-            <Icon name="home" size={25} color={o.focused ? '#398DEE' : '#666'}/>
+            <Icon name="home" size={25}/>
         )
     };
     constructor (props) {

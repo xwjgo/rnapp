@@ -5,7 +5,7 @@ import {StyleSheet, View, Text} from 'react-native';
 class UserPage extends React.Component {
     static navigationOptions = {
         tabBarLabel: (o) => (
-            <Icon name="user" size={25} color={o.focused ? '#398DEE' : '#666'}/>
+            <Icon name="user" size={25}/>
         )
     };
     render () {

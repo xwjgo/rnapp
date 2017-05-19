@@ -13,9 +13,13 @@ class ContentDetailPage extends React.Component {
     }
     static navigationOptions ({navigation}) {
         const {section, isFullScreen} = navigation.state.params;
+        if (isFullScreen) {
+            return {
+                header: null
+            }
+        }
         return {
             title: section.title,
-            headerVisible: !isFullScreen,
             headerRight: (<Button
                 title="聊天室"
                 onPress={() => {

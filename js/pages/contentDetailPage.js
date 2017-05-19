@@ -1,8 +1,10 @@
 import React from 'react';
-import {StyleSheet, View, Text, WebView, ScrollView, ToastAndroid, Dimensions, StatusBar, Button} from 'react-native';
+import {StyleSheet, View, Text, WebView, ScrollView, ToastAndroid, Dimensions, StatusBar, Button, AsyncStorage} from 'react-native';
 import Orientation from 'react-native-orientation';
 import Bottom from '../components/bottom';
 import settings from '../settings';
+import Utils from '../utils';
+import Constants from '../Constants';
 
 class ContentDetailPage extends React.Component {
     constructor (props) {
@@ -10,6 +12,10 @@ class ContentDetailPage extends React.Component {
         this.state = {
             isFullScreen: false
         };
+        // 用户事件 enter_section
+        this.render = this.render.after(Utils.pushEvent.bind(this, {
+            event_name: Constants.Events.enter_section
+        }));
     }
     static navigationOptions ({navigation}) {
         const {section, isFullScreen} = navigation.state.params;

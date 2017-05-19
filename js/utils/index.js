@@ -1,4 +1,7 @@
+import _ from 'lodash';
 import io from 'socket.io-client';
+import settings from '../settings';
+import {AsyncStorage} from 'react-native';
 
 export default class Utils {
     /**
@@ -17,9 +20,9 @@ export default class Utils {
             body: JSON.stringify(data)
         }).then(res => res.json()).then(res => {
             if (!res.code) {
-                successCallback(res);
+                successCallback && successCallback(res);
             } else {
-                errorCallback(res);
+                errorCallback && errorCallback(res);
             }
         }).catch(err => {
             alert('请求失败');
@@ -42,9 +45,9 @@ export default class Utils {
             body: JSON.stringify(data)
         }).then(res => res.json()).then(res => {
             if (!res.code) {
-                successCallback(res);
+                successCallback && successCallback(res);
             } else {
-                errorCallback(res);
+                errorCallback && errorCallback(res);
             }
         }).catch(err => {
             alert('请求失败');
@@ -60,9 +63,9 @@ export default class Utils {
             body: JSON.stringify(data)
         }).then(res => res.json()).then(res => {
             if (!res.code) {
-                successCallback(res);
+                successCallback && successCallback(res);
             } else {
-                errorCallback(res);
+                errorCallback && errorCallback(res);
             }
         }).catch(err => {
             alert('请求失败');
@@ -78,9 +81,9 @@ export default class Utils {
     static get (url, successCallback, errorCallback) {
        fetch(url).then(res => res.json()).then(res => {
            if (!res.code) {
-               successCallback(res);
+               successCallback && successCallback(res);
            } else {
-               errorCallback(res);
+               errorCallback && errorCallback(res);
            }
        }).catch(err => {
            alert('请求失败');
@@ -105,4 +108,22 @@ export default class Utils {
             isNewSocket: false
         };
     }
+
+    /**
+     * 埋点方法
+     * @param eventObj
+     */
+    static pushEvent (eventObj) {
+        const {host, port} = settings.server;
+        const eventApi = `http://${host}:${port}/api/events`;
+        AsyncStorage.getItem('user', (err, result) => {
+           if (err || !result) {
+               return;
+           }
+           const user = JSON.parse(result);
+           Utils.post(eventApi, _.extend(eventObj, {username: user.username}));
+        });
+    }
+
+
 }

@@ -14,6 +14,16 @@ import CommentPage from './js/pages/commentPage';
 import RegisterPage from './js/pages/registerPage';
 import RootPage from './js/pages/rootPage';
 
+// 扩展Function原型
+Function.prototype.after = function (fn) {
+    const self = this;
+    return function () {
+        const ret = self.call(this, arguments);
+        fn.call(this, arguments);
+        return ret;
+    };
+};
+
 const AppNavigator = StackNavigator({
     Home: {screen: HomePage},
     ContentList: {screen: ContentListPage},

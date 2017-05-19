@@ -8,7 +8,7 @@ import settings from '../settings';
 
 class RootPage extends React.Component {
     static navigationOptions = {
-        headerVisible: false
+        header: null
     };
     constructor (props) {
         super(props);

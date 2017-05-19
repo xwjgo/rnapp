@@ -9,7 +9,7 @@ import Utils from '../utils';
 
 class HomePage extends React.Component {
     static navigationOptions = {
-        headerVisible: false,
+        header: null,
         tabBarLabel: (o) => (
             <Icon name="home" size={25}/>
         )

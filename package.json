@@ -13,7 +13,7 @@
     "react-native": "0.43.4",
     "react-native-orientation": "git+https://github.com/yamill/react-native-orientation.git#2782917",
     "react-native-vector-icons": "4.1.1",
-    "react-navigation": "git+https://github.com/react-community/react-navigation.git#7165efc",
+    "react-navigation": "git+https://github.com/react-community/react-navigation.git#ec74206",
     "react-redux": "5.0.4",
     "redux": "3.6.0",
     "socket.io-client": "1.7.3"

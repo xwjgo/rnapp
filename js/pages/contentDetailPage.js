@@ -12,10 +12,14 @@ class ContentDetailPage extends React.Component {
         this.state = {
             isFullScreen: false
         };
-        // 用户事件 enter_section
-        this.render = this.render.after(Utils.pushEvent.bind(this, {
-            event_name: Constants.Events.enter_section
+        // 用户事件 play_video
+        this._firstPlayVideo = new Function().after(Utils.pushEvent.bind(this, {
+            event_name: Constants.Events.play_video
         }));
+        // 用户事件 leave_section
+        this.componentWillUnmount = new Function().after(Utils.pushEvent.bind(this, {
+            event_name: Constants.Events.leave_section
+        }))
     }
     static navigationOptions ({navigation}) {
         const {section, isFullScreen} = navigation.state.params;
@@ -35,20 +39,28 @@ class ContentDetailPage extends React.Component {
             headerStyle: {paddingRight: 10}
         }
     }
-    _handleFsToggle () {
-        if (this.state.isFullScreen) {
-            Orientation.lockToPortrait();
-            // 显示导航
-            this.props.navigation.setParams({isFullScreen: false});
-        } else {
-            // 进入全屏后
-            Orientation.lockToLandscape();
-            // 隐藏导航
-            this.props.navigation.setParams({isFullScreen: true});
+    _handlePostMessage (e) {
+        console.log(e.nativeEvent.data);
+        const message = e.nativeEvent.data;
+        switch (message) {
+            case 'toggleFullScreen':
+                if (this.state.isFullScreen) {
+                    Orientation.lockToPortrait();
+                    // 显示导航
+                    this.props.navigation.setParams({isFullScreen: false});
+                } else {
+                    // 进入全屏后
+                    Orientation.lockToLandscape();
+                    // 隐藏导航
+                    this.props.navigation.setParams({isFullScreen: true});
+                }
+                this.setState((prevState) => ({
+                    isFullScreen: !prevState.isFullScreen
+                }));
+                break;
+            case 'firstPlayVideo':
+                this._firstPlayVideo();
         }
-        this.setState((prevState) => ({
-            isFullScreen: !prevState.isFullScreen
-        }));
     };
     _genVideoHtml () {
         const {video} = this.props.navigation.state.params.section;
@@ -123,6 +135,9 @@ class ContentDetailPage extends React.Component {
                             main.classList.add('display-none');
                         }
                     });
+                    myPlayer.on('firstplay', () => {
+                        window.postMessage('firstPlayVideo');
+                    });
                 }
               </script>
             </body>
@@ -138,7 +153,7 @@ class ContentDetailPage extends React.Component {
                 />
                 <WebView
                     source={{html: this._genTemplate(this._genVideoHtml(), width, height)}}
-                    onMessage={this._handleFsToggle.bind(this)}
+                    onMessage={(e) => {this._handlePostMessage(e)}}
                 />
                 {this.state.isFullScreen ? null : <Bottom section={section}/>}
             </View>

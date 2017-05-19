@@ -6,6 +6,7 @@ import {StyleSheet, Text, View, AsyncStorage, ToastAndroid, FlatList, TouchableO
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Utils from '../utils';
 import settings from '../settings';
+import Constants from '../Constants';
 
 class Bottom extends React.Component {
     constructor (props) {
@@ -16,7 +17,19 @@ class Bottom extends React.Component {
             hasScore: false,
             score: null,
             isScoreSelectVisible: false
-        }
+        };
+        // 用户事件 create_score
+        this._handleScore = this._handleScore.after(Utils.pushEvent.bind(this, {
+            event_name: Constants.Events.create_score
+        }));
+        // 用户事件 create_like
+         this._handleLike = this._handleLike.after(Utils.pushEvent.bind(this, {
+            event_name: Constants.Events.create_like
+        }));
+        // 用户事件 enter_comments
+        this._handleComment = this._handleComment.after(Utils.pushEvent.bind(this, {
+            event_name: Constants.Events.enter_comments
+        }));
     }
     // 收藏按钮
     _genLikeButton () {

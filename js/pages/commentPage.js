@@ -4,6 +4,7 @@ import {StyleSheet, View, Text, Button, FlatList, TextInput, ToastAndroid} from 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Utils from '../utils';
 import settings from '../settings';
+import Constants from '../Constants';
 
 class CommentPage extends React.Component {
     static navigationOptions ({navigation}) {
@@ -22,6 +23,11 @@ class CommentPage extends React.Component {
             parentUsername: null,
             hasLiked: []
         };
+        // 用户事件 create_comment
+        this._handleSend = this._handleSend.after(Utils.pushEvent.bind(this, {
+            event_name: Constants.Events.create_comment
+        }));
+
     }
     componentDidMount () {
         const {host, port} = settings.server;

@@ -7,6 +7,7 @@ import {StyleSheet, View, Text, FlatList, AsyncStorage, TouchableOpacity} from '
 import async from 'async';
 import Utils from '../utils';
 import settings from '../settings';
+import Constants from '../Constants';
 
 class LikePage extends React.Component {
     static navigationOptions = {
@@ -19,6 +20,10 @@ class LikePage extends React.Component {
         this.state = {
             likes: []
         };
+        // 用户事件 enter_section_from_likes
+        this._goSectionPage = this._goSectionPage.after(Utils.pushEvent.bind(this, {
+            event_name: Constants.Events.enter_section_from_like
+        }));
     }
     componentDidMount () {
         AsyncStorage.getItem('user', (error, result) => {

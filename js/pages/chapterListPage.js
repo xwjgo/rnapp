@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import React from 'react';
 import {View, Text, StyleSheet, SectionList, TouchableOpacity, TouchableHighlight} from 'react-native';
+import Utils from '../utils';
+import Constants from '../Constants';
 
 class ChapterListPage extends React.Component {
     static navigationOptions ({navigation}) {
@@ -15,6 +17,11 @@ class ChapterListPage extends React.Component {
         this.state = {
             currentChapterId: _.get(course, 'chapters[0]._id', '')
         };
+        // 用户事件 enter_section_from_list
+        this._goContentDetailPage = this._goContentDetailPage.after(Utils.pushEvent.bind(this, {
+            event_name: Constants.Events.enter_section_from_list
+        }));
+        // 用户事件 leave_section
     }
     _handlePress (section) {
         this.setState({

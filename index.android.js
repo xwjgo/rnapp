@@ -18,8 +18,8 @@ import RootPage from './js/pages/rootPage';
 Function.prototype.after = function (fn) {
     const self = this;
     return function () {
-        const ret = self.call(this, arguments);
-        fn.call(this, arguments);
+        const ret = self.apply(this, arguments);
+        fn.apply(this, arguments);
         return ret;
     };
 };

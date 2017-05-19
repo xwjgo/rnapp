@@ -7,6 +7,7 @@ import {View, Text, TextInput, Button, AsyncStorage, StyleSheet, FlatList} from 
 import MessageItem from '../components/messageItem';
 import Utils from '../utils';
 import settings from '../settings';
+import Constants from '../Constants';
 
 class ChatPage extends React.Component {
     static navigationOptions ({navigation}) {
@@ -21,6 +22,14 @@ class ChatPage extends React.Component {
             message: '',
         };
         this.sectionId = props.navigation.state.params.section._id;
+        // 用户事件 enter_chat_room
+        this.componentDidMount = this.componentDidMount.after(Utils.pushEvent.bind(this, {
+            event_name: Constants.Events.enter_chat_room
+        }));
+        // 用户事件 create_chat_message
+        this._handleSend = this._handleSend.after(Utils.pushEvent.bind(this, {
+            event_name: Constants.Events.create_chat_message
+        }));
     }
     componentDidMount () {
         AsyncStorage.getItem('user', (error, result) => {
@@ -54,6 +63,7 @@ class ChatPage extends React.Component {
         this.props.actions.addSocketData(this.sectionId, data);
     }
     _handleSend (message) {
+        console.log(message);
         if (!message.trim()) {
             return;
         }

@@ -63,7 +63,6 @@ class ChatPage extends React.Component {
         this.props.actions.addSocketData(this.sectionId, data);
     }
     _handleSend (message) {
-        console.log(message);
         if (!message.trim()) {
             return;
         }

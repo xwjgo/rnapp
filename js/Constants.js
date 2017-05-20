@@ -3,6 +3,7 @@ export default {
         enter_section_from_like: '从个人收藏进入小节',
         enter_section_from_list: '从章节列表进入小节',
         play_video: '播放视频',
+        pause_video: '暂停视频',
         create_score: '评分',
         create_like: '收藏',
         enter_chat_room: '进入聊天室',

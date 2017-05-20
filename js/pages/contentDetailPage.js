@@ -13,8 +13,12 @@ class ContentDetailPage extends React.Component {
             isFullScreen: false
         };
         // 用户事件 play_video
-        this._firstPlayVideo = new Function().after(Utils.pushEvent.bind(this, {
+        this._playVideo = new Function().after(Utils.pushEvent.bind(this, {
             event_name: Constants.Events.play_video
+        }));
+        // 用户事件 pause_video
+        this._pauseVideo = new Function().after(Utils.pushEvent.bind(this, {
+            event_name: Constants.Events.pause_video
         }));
         // 用户事件 leave_section
         this.componentWillUnmount = new Function().after(Utils.pushEvent.bind(this, {
@@ -40,7 +44,6 @@ class ContentDetailPage extends React.Component {
         }
     }
     _handlePostMessage (e) {
-        console.log(e.nativeEvent.data);
         const message = e.nativeEvent.data;
         switch (message) {
             case 'toggleFullScreen':
@@ -58,8 +61,11 @@ class ContentDetailPage extends React.Component {
                     isFullScreen: !prevState.isFullScreen
                 }));
                 break;
-            case 'firstPlayVideo':
-                this._firstPlayVideo();
+            case 'playVideo':
+                this._playVideo();
+                break;
+            case 'pauseVideo':
+                this._pauseVideo();
         }
     };
     _genVideoHtml () {
@@ -135,8 +141,11 @@ class ContentDetailPage extends React.Component {
                             main.classList.add('display-none');
                         }
                     });
-                    myPlayer.on('firstplay', () => {
-                        window.postMessage('firstPlayVideo');
+                    myPlayer.on('play', () => {
+                        window.postMessage('playVideo');
+                    });
+                    myPlayer.on('pause',() => {
+                        window.postMessage('pauseVideo'); 
                     });
                 }
               </script>

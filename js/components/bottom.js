@@ -19,12 +19,16 @@ class Bottom extends React.Component {
             isScoreSelectVisible: false
         };
         // 用户事件 create_score
-        this._handleScore = this._handleScore.after(Utils.pushEvent.bind(this, {
+        this._handleSelectScore = this._handleSelectScore.after(Utils.pushEvent.bind(this, {
             event_name: Constants.Events.create_score
         }));
         // 用户事件 create_like
-         this._handleLike = this._handleLike.after(Utils.pushEvent.bind(this, {
+        this._createLike = this._createLike.after(Utils.pushEvent.bind(this, {
             event_name: Constants.Events.create_like
+        }));
+        // 用户事件 delete_like
+        this._deleteLike = this._deleteLike.after(Utils.pushEvent.bind(this, {
+            event_name: Constants.Events.delete_like
         }));
         // 用户事件 enter_comments
         this._handleComment = this._handleComment.after(Utils.pushEvent.bind(this, {
@@ -69,27 +73,37 @@ class Bottom extends React.Component {
     }
     // 点击收藏
     _handleLike () {
+        if (this.state.hasLiked) {
+            this._deleteLike();
+        } else {
+            this._createLike();
+        }
+    }
+    // 添加收藏
+    _createLike () {
         const {host, port} = settings.server;
         const likeApi = `http://${host}:${port}/api/users/${this.user._id}/likes`;
-        if (this.state.hasLiked) {
-            Utils.delete(likeApi, {
-                section_id: this.section._id
-            }, () => {
-                ToastAndroid.show('取消收藏该小节成功!', ToastAndroid.SHORT);
-                this._setStateAndUpdateStorage();
-            }, () => {
-                ToastAndroid.show('取消收藏该小节失败!', ToastAndroid.SHORT);
-            });
-        } else {
-            Utils.post(likeApi, {
-                section_id: this.section._id
-            }, (res) => {
-                ToastAndroid.show('收藏该小节成功!', ToastAndroid.SHORT);
-                this._setStateAndUpdateStorage();
-            }, (res) => {
-                ToastAndroid.show('收藏该小节失败!', ToastAndroid.SHORT);
-            });
-        }
+        Utils.delete(likeApi, {
+            section_id: this.section._id
+        }, () => {
+            ToastAndroid.show('取消收藏该小节成功!', ToastAndroid.SHORT);
+            this._setStateAndUpdateStorage();
+        }, () => {
+            ToastAndroid.show('取消收藏该小节失败!', ToastAndroid.SHORT);
+        });
+    }
+    // 删除收藏
+    _deleteLike () {
+        const {host, port} = settings.server;
+        const likeApi = `http://${host}:${port}/api/users/${this.user._id}/likes`;
+        Utils.post(likeApi, {
+            section_id: this.section._id
+        }, (res) => {
+            ToastAndroid.show('收藏该小节成功!', ToastAndroid.SHORT);
+            this._setStateAndUpdateStorage();
+        }, (res) => {
+            ToastAndroid.show('收藏该小节失败!', ToastAndroid.SHORT);
+        });
     }
     // 点击评分
     _handleScore () {

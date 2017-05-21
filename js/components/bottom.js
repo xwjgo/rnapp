@@ -83,19 +83,6 @@ class Bottom extends React.Component {
     _createLike () {
         const {host, port} = settings.server;
         const likeApi = `http://${host}:${port}/api/users/${this.user._id}/likes`;
-        Utils.delete(likeApi, {
-            section_id: this.section._id
-        }, () => {
-            ToastAndroid.show('取消收藏该小节成功!', ToastAndroid.SHORT);
-            this._setStateAndUpdateStorage();
-        }, () => {
-            ToastAndroid.show('取消收藏该小节失败!', ToastAndroid.SHORT);
-        });
-    }
-    // 删除收藏
-    _deleteLike () {
-        const {host, port} = settings.server;
-        const likeApi = `http://${host}:${port}/api/users/${this.user._id}/likes`;
         Utils.post(likeApi, {
             section_id: this.section._id
         }, (res) => {
@@ -103,6 +90,19 @@ class Bottom extends React.Component {
             this._setStateAndUpdateStorage();
         }, (res) => {
             ToastAndroid.show('收藏该小节失败!', ToastAndroid.SHORT);
+        });
+    }
+    // 删除收藏
+    _deleteLike () {
+        const {host, port} = settings.server;
+        const likeApi = `http://${host}:${port}/api/users/${this.user._id}/likes`;
+        Utils.delete(likeApi, {
+            section_id: this.section._id
+        }, () => {
+            ToastAndroid.show('取消收藏该小节成功!', ToastAndroid.SHORT);
+            this._setStateAndUpdateStorage();
+        }, () => {
+            ToastAndroid.show('取消收藏该小节失败!', ToastAndroid.SHORT);
         });
     }
     // 点击评分

@@ -5,7 +5,7 @@ import Utils from '../utils';
 
 class LoginPage extends React.Component {
     static navigationOptions = {
-        headerVisible: false
+        header: null
     };
     constructor (props) {
         super(props);
